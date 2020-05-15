@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 
-dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\heart-disease-prediction-using-logistic-regression\\framingham.csv")
+dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\framingham.csv")
 
 dataset.head()
 dataset.info()
