@@ -1,0 +1,88 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import math
+import numpy as np
+
+dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\heart-disease-prediction-using-logistic-regression\\framingham.csv")
+
+dataset.head()
+dataset.info()
+
+###Data Preprocesiing
+dataset = dataset.rename({'male': 'sex'}, axis=1)
+dataset=dataset.drop("education",axis=1)
+dataset.cigsPerDay=dataset["cigsPerDay"].fillna(dataset["cigsPerDay"].mean())
+dataset.BPMeds=dataset["BPMeds"].fillna(dataset["BPMeds"].mean())
+dataset.totChol=dataset["totChol"].fillna(dataset["totChol"].mean())
+dataset.totChol=dataset["totChol"].fillna(dataset["totChol"].mean())
+dataset.BMI=dataset["BMI"].fillna(dataset["BMI"].mean())
+dataset.heartRate=dataset["heartRate"].fillna(dataset["heartRate"].mean())
+dataset.glucose=dataset["glucose"].fillna(dataset["glucose"].mean())
+
+dataset.info()
+
+###x & y
+x= dataset.iloc[:,:-1]
+y=dataset.iloc[:,-1]
+
+import statsmodels.api as sm
+
+x_copy = x
+reg_OLS = sm.OLS(y,x_copy).fit()
+reg_OLS.summary()
+max(reg_OLS.pvalues)
+
+x=x.drop(["totChol"],axis=1)
+
+#iteration 1
+x_copy = x
+reg_OLS = sm.OLS(y,x_copy).fit()
+reg_OLS.summary()
+max(reg_OLS.pvalues)
+
+x=x.drop(["currentSmoker"],axis=1)
+
+#iteration 2
+x_copy = x
+reg_OLS = sm.OLS(y,x_copy).fit()
+reg_OLS.summary()
+max(reg_OLS.pvalues)
+
+x=x.drop(["glucose"],axis=1)
+
+#iteration 3
+x_copy = x
+reg_OLS = sm.OLS(y,x_copy).fit()
+reg_OLS.summary()
+max(reg_OLS.pvalues)
+
+reg_OLS.rsquared
+reg_OLS.rsquared_adj
+
+
+
+# Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.25, random_state = 0)
+
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+x_train = sc.fit_transform(x_train)
+x_test = sc.transform(x_test)
+
+# Fitting Logistic Regression to the Training set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(penalty='l2',C = 1.0,random_state = 0,
+                                solver='sag', multi_class='ovr')
+classifier.fit(x_train, y_train)
+
+# Predicting the Test set results
+y_pred = classifier.predict(x_test)
+classifier.predict_proba(x_test)
+classifier.predict_log_proba(x_test)
+
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
+confusion_matrix(y_test, y_pred)
+accuracy_score(y_test, y_pred)
