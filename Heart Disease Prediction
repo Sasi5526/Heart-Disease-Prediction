@@ -9,11 +9,61 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import seaborn as sb
+import plotly.express as px
 
-dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\framingham.csv")
+dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\heart-disease-prediction-using-logistic-regression\\framingham.csv")
 
 dataset.head()
 dataset.info()
+
+#Ploting the relation between gender who have more risk towards Heart disease
+plt.figure(figsize=(12,8))
+sb.barplot(x=dataset["sex"], y=dataset["TenYearCHD"])
+plt.title("Graph showing which gender has more risk of coronary heart disease CHD")
+plt.xlabel("0 is female and 1 is male",size=20)
+plt.ylabel("total cases", size=20)
+plt.xticks(size=12)
+plt.yticks(size=12)
+#Males have Heavy risk than Females
+
+#Plotting a linegraph to check the relationship between age and cigsPerDay, totChol, glucose.
+cig_g = dataset.groupby("age").cigsPerDay.mean()
+tot_g = dataset.groupby("age").totChol.mean()
+glu_g = dataset.groupby("age").glucose.mean()
+
+plt.figure(figsize=(12,8))
+sb.lineplot(data= cig_g, label="cigsPerDay")
+sb.lineplot(data= tot_g, label="totChol")
+sb.lineplot(data= glu_g, label="glucose")
+plt.title("Graph showing totChol and cigsPerDay in every age group.")
+plt.xlabel("age", size=20)
+plt.ylabel("count", size=20)
+plt.xticks(size=12)
+plt.yticks(size=12)
+
+# which Age group are more smokers
+Smoker = dataset.groupby("age",as_index=False).currentSmoker.sum()
+
+plt.figure(figsize=(12,8))
+sb.barplot(x=Smoker["age"], y=Smoker["currentSmoker"])
+plt.title("Graph showing which age group has more smokers.")
+plt.xlabel("age", size=20)
+plt.ylabel("currentSmokers", size=20)
+plt.xticks(size=12)
+plt.yticks(size=12)
+# the people at age 40 are heavy Smokers
+
+#the Risk of Smokers who smoke cigar per day towards heart disease
+cig_per = dataset.groupby("TenYearCHD", as_index=False).cigsPerDay.mean()
+
+plt.figure(figsize=(12,8))
+sb.barplot(x=cig_per["TenYearCHD"], y=cig_per["cigsPerDay"])
+plt.title("Graph showing the relation between cigsPerDay and risk of coronary heart disease.")
+plt.xlabel("Rick of CHD", size=20)
+plt.ylabel("cigsPerDay", size=20)
+plt.xticks(size=12)
+plt.yticks(size=12)
 
 ###Data Preprocesiing
 dataset = dataset.rename({'male': 'sex'}, axis=1)
@@ -32,7 +82,6 @@ dataset.info()
 x= dataset.iloc[:,:-1]
 y=dataset.iloc[:,-1]
 
-#Backward Elimination
 import statsmodels.api as sm
 
 x_copy = x
@@ -150,8 +199,8 @@ accuracy=np.mean([A1,A2,A3,A4])
 
 
 ###Random Forest
-
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 
 classifier = RandomForestClassifier(n_estimators=10,
                                     criterion='entropy')
@@ -165,7 +214,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 confusion_matrix(y_test, y_pred)
 accuracy_score(y_test, y_pred)
 
-###Hyperparameter Tuning for Random Forest
+###Hyperparameter Tuning
 #GridSearchCV
 from sklearn.model_selection import GridSearchCV
 
