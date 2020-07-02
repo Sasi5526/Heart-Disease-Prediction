@@ -17,6 +17,13 @@ dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\heart-disease-prediction
 dataset.head()
 dataset.info()
 
+# checking distributions using histograms
+fig = plt.figure(figsize = (15,20))
+ax = fig.gca()
+dataset.hist(ax = ax)
+
+# checking which features are correlated with each other and are correlated with the outcome variable
+ 
 #Ploting the relation between gender who have more risk towards Heart disease
 plt.figure(figsize=(12,8))
 sb.barplot(x=dataset["sex"], y=dataset["TenYearCHD"])
@@ -41,6 +48,7 @@ plt.xlabel("age", size=20)
 plt.ylabel("count", size=20)
 plt.xticks(size=12)
 plt.yticks(size=12)
+
 
 # which Age group are more smokers
 Smoker = dataset.groupby("age",as_index=False).currentSmoker.sum()
