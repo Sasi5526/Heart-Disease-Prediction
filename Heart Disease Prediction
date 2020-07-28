@@ -12,7 +12,7 @@ import numpy as np
 import seaborn as sb
 import plotly.express as px
 
-dataset = pd.read_csv("D:\\sasi\\study\\ML\\ML project\\heart-disease-prediction-using-logistic-regression\\framingham.csv")
+dataset = pd.read_csv("''''\\framingham.csv")
 
 dataset.head()
 dataset.info()
